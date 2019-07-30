@@ -1,4 +1,4 @@
 # GitCracken
 Crack GitKraken
 
-GitKraken Pro/Enterprise v3.3.2 utils for non-commercial use
+Author: KillWolfVlad at [GitKraken-AUR](https://github.com/KillWolfVlad/GitKraken-AUR)
