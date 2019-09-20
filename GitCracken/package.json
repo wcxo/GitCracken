@@ -27,7 +27,8 @@
     "natsort": "^2.0.2",
     "node-emoji": "^1.10.0",
     "pkg-dir": "^4.2.0",
-    "uuid": "^3.3.2"
+    "uuid": "^3.3.2",
+    "semver": "^6.3.0"
   },
   "devDependencies": {
     "@types/diff": "^4.0.2",
@@ -36,6 +37,7 @@
     "@types/node": "^12.0.10",
     "@types/node-emoji": "^1.8.1",
     "@types/uuid": "^3.4.4",
+    "@types/semver": "^6.0.2",
     "prettier": "^1.18.2",
     "rimraf": "^2.6.3",
     "ts-node": "^8.3.0",

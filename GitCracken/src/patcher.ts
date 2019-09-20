@@ -5,6 +5,7 @@ import * as asar from "asar";
 import * as diff from "diff";
 import * as fs from "fs-extra";
 import natsort from "natsort";
+import * as semver from 'semver';
 
 import {baseDir} from "../global";
 import {CURRENT_PLATFORM, Platforms} from "./platform";
@@ -36,11 +37,26 @@ export class Patcher {
       .readdirSync(gitkrakenLocal)
       .filter((item) => item.startsWith("app"));
     apps.sort(natsort());
-    let app = apps.length === 0 ? undefined : apps[apps.length - 1];
+
+    const versions = [];
+    for(const app of apps){
+      const matches = new RegExp('app-(\\d+\\.\\d+\\.\\d+)').exec(app);
+      if(matches){
+        versions.push(matches[1]);
+      }
+    }
+
+    const lastVersion = Patcher.findlastAppVersion(versions);
+
+    if(!lastVersion)
+      return undefined;
+
+    let app = 'app-' + lastVersion;
     if (!app) {
       return undefined;
     }
     app = path.join(gitkrakenLocal, app, "resources/app.asar");
+    
     return fs.existsSync(app) ? app : undefined;
   }
 
@@ -48,6 +64,20 @@ export class Patcher {
     return Patcher.findAsarUnix(
       "/Applications/GitKraken.app/Contents/Resources/app.asar",
     );
+  }
+
+  private static findlastAppVersion(versions: string[]): string | undefined {
+    if(versions.length === 0) return undefined;
+
+    let max = versions[0];
+
+    for(const version of versions){
+      if(semver.gt(version, max)){
+        max = version;
+      }
+    }
+
+    return max;
   }
 
   private static findAsar(dir?: string): string | undefined {
