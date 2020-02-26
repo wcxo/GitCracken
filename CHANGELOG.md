@@ -6,9 +6,18 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [v0.8] - 2020-02-26
+### Added
+- Support GitKraken v6.5.3
+- Added short flags for command-line options
+
+### Changed
+- Set same default actions (`backup`, `unpack`, `patch`, `pack` and `remove`) for all platforms (Win, Linux, Mac)
+- Other minor fixs
+
 ## [v0.7] - 2020-02-11
 ### Changed
-- Syncronized all forks
+- Synchronized all forks
 
 ## [v0.6.1] - 2019-07-30
 ### Changed
@@ -28,7 +37,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Support GitKraken Pro v6.0.0
 - Bump dependencies
 
-[Unreleased]: https://github.com/BoGnY/GitCracken/compare/v0.7...HEAD
+[Unreleased]: https://github.com/BoGnY/GitCracken/compare/v0.8...HEAD
+[v0.8]: https://github.com/BoGnY/GitCracken/compare/v0.7...v0.8
 [v0.7]: https://github.com/BoGnY/GitCracken/compare/v0.6.1...v0.7
 [v0.6.1]: https://github.com/BoGnY/GitCracken/compare/v0.6.0...v0.6.1
 [v0.6.0]: https://github.com/BoGnY/GitCracken/releases/tag/v0.6.0
