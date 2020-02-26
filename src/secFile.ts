@@ -3,14 +3,14 @@ import * as crypto from "crypto";
 import * as fs from "fs-extra";
 
 /**
- * Password protected file with JSON content
+ * Password protected file with JSON content.
  * This class is fork of <https://gitlab.com/maxkorp/secure-storage> library
  */
-export class SecFile {
+export class SecFile<T = object> {
   private readonly _fileName: string;
   private readonly _password: string;
   private readonly _algorithm: string;
-  private _data?: object;
+  private _data?: T;
 
   /**
    * Password protected file with JSON content constructor
@@ -21,7 +21,7 @@ export class SecFile {
   public constructor(
     fileName: string,
     password: string,
-    algorithm: string = "aes256",
+    algorithm: string = "aes-256-cbc",
   ) {
     this._fileName = fileName;
     this._password = password;
@@ -52,7 +52,7 @@ export class SecFile {
   /**
    * Data
    */
-  public get data(): object | undefined {
+  public get data(): T | undefined {
     return this._data;
   }
 

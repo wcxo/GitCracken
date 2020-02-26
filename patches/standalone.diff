@@ -8,7 +8,7 @@
 +++ static/startMainProcess.js
 @@ -1,3 +1,14 @@
 +function PatchSnapshot() {
-+  snapshotResult.customRequire.cache['edm-d/src/d.js'] = {
++  snapshotResult.customRequire.cache['@axosoft/edm-d/src/d.js'] = {
 +    exports: () =>
 +      Promise.resolve({
 +        expiresAt: 8640000000000000,

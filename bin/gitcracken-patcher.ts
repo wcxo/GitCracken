@@ -2,7 +2,7 @@ import chalk from "chalk";
 import * as program from "commander";
 import * as emoji from "node-emoji";
 
-import {CURRENT_PLATFORM, Logo, Patcher, Platforms} from "../";
+import {Logo, Patcher} from "../";
 
 const enum Actions {
   backup = 1,
@@ -14,7 +14,11 @@ const enum Actions {
 
 async function executeActions(actions: Actions[]) {
   Logo.print();
-  const patcher = new Patcher(program.asar, program.dir, ...program.feature);
+  const patcher = new Patcher({
+    asar: program.asar,
+    dir: program.dir,
+    features: program.feature,
+  });
   for (const action of actions) {
     switch (action) {
       case Actions.backup: {
@@ -73,10 +77,10 @@ async function executeActions(actions: Actions[]) {
 program
   .name("gitcracken-patcher")
   .description("GitKraken patcher")
-  .option("--asar <file>", "app.asar file")
-  .option("--dir <dir>", "app.asar directory")
+  .option("-a, --asar <file>", "app.asar file")
+  .option("-d, --dir <dir>", "app directory")
   .option(
-    "--feature <value>",
+    "-f, --feature <value>",
     "patcher feature",
     (val, memo) => {
       memo.push(val);
@@ -85,27 +89,19 @@ program
     [],
   )
   .arguments("[actions...]")
-  .action(async (strActions: string[]) => {
+  .action(async (strActions?: string[]) => {
     if (program.feature.length === 0) {
       program.feature.push("pro");
     }
     const actions: Actions[] = [];
-    if (!strActions || strActions.length === 0) {
-      switch (CURRENT_PLATFORM) {
-        case Platforms.linux:
-          actions.push(
-            Actions.backup,
-            Actions.unpack,
-            Actions.patch,
-            Actions.pack,
-            Actions.remove,
-          );
-          break;
-        case Platforms.macOS:
-        case Platforms.windows:
-          actions.push(Actions.backup, Actions.unpack, Actions.patch);
-          break;
-      }
+    if (!strActions || !strActions.length) {
+      actions.push(
+        Actions.backup,
+        Actions.unpack,
+        Actions.patch,
+        Actions.pack,
+        Actions.remove,
+      );
     } else {
       strActions.forEach((item) => {
         switch (item.toLowerCase()) {

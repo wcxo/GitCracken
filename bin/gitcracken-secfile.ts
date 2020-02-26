@@ -6,9 +6,9 @@ import {AppId, Logo, SecFile} from "../";
 program
   .name("gitcracken-secfile")
   .description("read GitKraken secFile")
-  .option("--appid [id]", "AppId for secFile decrypt", AppId.read())
+  .option("-i, --appid <id>", "AppId for secFile decrypt", AppId.read())
   .arguments("[files...]")
-  .action((files: string[]) => {
+  .action((files?: string[]) => {
     Logo.print();
     for (const file of files || []) {
       console.log(`${chalk.green("==>")} ${chalk.bold(file)}`);

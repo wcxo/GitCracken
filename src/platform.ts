@@ -22,11 +22,10 @@ export const CURRENT_PLATFORM: Platforms = ((): Platforms => {
   if (process.platform === "darwin") {
     return Platforms.macOS;
   }
-  console.log(
+  console.error(
     `We Are Deeply Sorry! Your OS ${chalk.red.bold(
       process.platform,
     )} is not supported!`,
   );
-  process.exit(1);
-  return undefined as any;
+  return process.exit(1);
 })();

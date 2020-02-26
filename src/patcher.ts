@@ -5,10 +5,29 @@ import * as asar from "asar";
 import * as diff from "diff";
 import * as fs from "fs-extra";
 import natsort from "natsort";
-import * as semver from 'semver';
 
 import {baseDir} from "../global";
 import {CURRENT_PLATFORM, Platforms} from "./platform";
+
+/**
+ * Patcher options
+ */
+export interface IPatcherOptions {
+  /**
+   * app.asar file
+   */
+  readonly asar?: string;
+
+  /**
+   * app directory
+   */
+  readonly dir?: string;
+
+  /**
+   * Patcher features
+   */
+  readonly features: string[];
+}
 
 /**
  * Patcher
@@ -26,37 +45,18 @@ export class Patcher {
   }
 
   private static findAsarWindows(): string | undefined {
-    const gitkrakenLocal: string = path.join(
-      os.homedir(),
-      "AppData/Local/gitkraken",
-    );
+    const gitkrakenLocal = path.join(os.homedir(), "AppData/Local/gitkraken");
     if (!fs.existsSync(gitkrakenLocal)) {
       return undefined;
     }
     const apps = fs
       .readdirSync(gitkrakenLocal)
-      .filter((item) => item.startsWith("app"));
-    apps.sort(natsort());
-
-    const versions = [];
-    for(const app of apps){
-      const matches = new RegExp('app-(\\d+\\.\\d+\\.\\d+)').exec(app);
-      if(matches){
-        versions.push(matches[1]);
-      }
-    }
-
-    const lastVersion = Patcher.findlastAppVersion(versions);
-
-    if(!lastVersion)
-      return undefined;
-
-    let app = 'app-' + lastVersion;
+      .filter((item) => item.match(/^app-\d+\.\d+\.\d+$/));
+    let app = apps.sort(natsort({desc: true}))[0];
     if (!app) {
       return undefined;
     }
     app = path.join(gitkrakenLocal, app, "resources/app.asar");
-    
     return fs.existsSync(app) ? app : undefined;
   }
 
@@ -64,20 +64,6 @@ export class Patcher {
     return Patcher.findAsarUnix(
       "/Applications/GitKraken.app/Contents/Resources/app.asar",
     );
-  }
-
-  private static findlastAppVersion(versions: string[]): string | undefined {
-    if(versions.length === 0) return undefined;
-
-    let max = versions[0];
-
-    for(const version of versions){
-      if(semver.gt(version, max)){
-        max = version;
-      }
-    }
-
-    return max;
   }
 
   private static findAsar(dir?: string): string | undefined {
@@ -107,18 +93,19 @@ export class Patcher {
 
   /**
    * Patcher constructor
-   * @param asarFile app.asar file
-   * @param dir app.asar directory
-   * @param features Patcher features
+   * @param options Options
    */
-  public constructor(asarFile?: string, dir?: string, ...features: string[]) {
-    const _asar = asarFile || Patcher.findAsar(dir);
-    if (!_asar) {
-      throw new Error(`Can't find app.asar!`);
+  public constructor(options: IPatcherOptions) {
+    const maybeAsar = options.asar || Patcher.findAsar(options.dir);
+    if (!maybeAsar) {
+      throw new Error("Can't find app.asar!");
     }
-    this._asar = _asar;
-    this._dir = dir || Patcher.findDir(this._asar);
-    this._features = features;
+    this._asar = maybeAsar;
+    this._dir = options.dir || Patcher.findDir(this.asar);
+    this._features = options.features;
+    if (!this.features.length) {
+      throw new Error("Features is empty!");
+    }
   }
 
   /**
@@ -129,7 +116,7 @@ export class Patcher {
   }
 
   /**
-   * app.asar directory
+   * app directory
    */
   public get dir(): string {
     return this._dir;
@@ -147,13 +134,13 @@ export class Patcher {
    * @throws Error
    */
   public backupAsar(): string {
-    const backup: string = `${this.asar}.${new Date().getTime()}.backup`;
+    const backup = `${this.asar}.${new Date().getTime()}.backup`;
     fs.copySync(this.asar, backup);
     return backup;
   }
 
   /**
-   * Unpack app.asar file
+   * Unpack app.asar file into app directory
    * @throws Error
    */
   public unpackAsar(): void {
@@ -161,7 +148,7 @@ export class Patcher {
   }
 
   /**
-   * Pack app.asar directory
+   * Pack app directory to app.asar file
    * @throws Error
    */
   public packDirAsync(): Promise<void> {
@@ -169,7 +156,7 @@ export class Patcher {
   }
 
   /**
-   * Remove app.asar directory
+   * Remove app directory
    * @throws Error
    */
   public removeDir(): void {
@@ -177,31 +164,40 @@ export class Patcher {
   }
 
   /**
-   * Patch app.asar directory
+   * Patch app directory
    * @throws Error
    */
   public patchDir(): void {
     for (const feature of this.features) {
-      const patches = diff.parsePatch(
-        fs.readFileSync(
-          path.join(baseDir, "patches", `${feature}.diff`),
-          "utf8",
-        ),
-      );
-      for (const patch of patches) {
-        const sourceData = fs.readFileSync(
-          path.join(this.dir, patch.oldFileName as string),
-          "utf8",
-        );
-        if (patch.oldFileName !== patch.newFileName) {
-          fs.unlinkSync(path.join(this.dir, patch.oldFileName as string));
-        }
-        const sourcePatchedData = diff.applyPatch(sourceData, patch);
-        fs.writeFileSync(
-          path.join(this.dir, patch.newFileName as string),
-          sourcePatchedData,
-        );
-      }
+      this.patchDirWithFeature(feature);
     }
+  }
+
+  private patchDirWithFeature(feature: string): void {
+    const patches = diff.parsePatch(
+      fs.readFileSync(path.join(baseDir, "patches", `${feature}.diff`), "utf8"),
+    );
+    for (const patch of patches) {
+      this.patchDirWithPatch(patch);
+    }
+  }
+
+  private patchDirWithPatch(patch: diff.ParsedDiff): void {
+    const sourceData = fs.readFileSync(
+      path.join(this.dir, patch.oldFileName!),
+      "utf8",
+    );
+    const sourcePatchedData = diff.applyPatch(sourceData, patch);
+    if ((sourcePatchedData as any) === false) {
+      throw new Error(`Can't patch ${patch.oldFileName}`);
+    }
+    if (patch.oldFileName !== patch.newFileName) {
+      fs.unlinkSync(path.join(this.dir, patch.oldFileName!));
+    }
+    fs.writeFileSync(
+      path.join(this.dir, patch.newFileName!),
+      sourcePatchedData,
+      "utf8",
+    );
   }
 }

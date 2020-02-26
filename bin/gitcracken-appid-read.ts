@@ -6,7 +6,7 @@ import {AppId, Logo} from "../src";
 program
   .name("gitcracken-appid-read")
   .description("read GitKraken AppId from config")
-  .option("--config <file>", "Path to config")
+  .option("-c, --config <file>", "path to config")
   .action(() => {
     Logo.print();
     console.log(

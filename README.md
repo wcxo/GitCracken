@@ -4,7 +4,7 @@ GitKraken utils for non-commercial use
 
 Author: KillWolfVlad at [GitKraken-AUR](https://github.com/KillWolfVlad/GitKraken-AUR)
 
-Working on `GNU/Linux`, `Windows` and `macOS`!
+Working on `GNU/Linux` (without `snap`), `Windows` and `macOS`!
 
 > WARNING! On `macOS` you should patch `GitKraken` only after first launch and full program closing!
 >
@@ -12,7 +12,7 @@ Working on `GNU/Linux`, `Windows` and `macOS`!
 
 ## Requirements
 
-- `Node.js` v10 LTS or later
+- `Node.js` v12 LTS or later
 - `Yarn`
 
 ## Usage
@@ -20,10 +20,6 @@ Working on `GNU/Linux`, `Windows` and `macOS`!
 - `yarn install`
 - `yarn build`
 - `node dist/bin/gitcracken.js --help` for more usage information
-
-If Yarn does not work (can't download sevmer package), use Npm:
-- `npm install`
-- `npm run build`
 
 ### Patcher
 
@@ -35,21 +31,21 @@ $ yarn run gitcracken patcher [options] [actions...]
 
 > If `actions` is empty, will be used `auto` mode (ideal for beginners)
 
-| Action   | Description                           |
-|----------|---------------------------------------|
-| `backup` | Backup `app.asar` file                |
-| `unpack` | Unpack `app.asar` file into directory |
-| `patch`  | Patch directory                       |
-| `pack`   | Pack directory to `app.asar`          |
-| `remove` | Remove directory                      |
+| Action   | Description                                 |
+|----------|---------------------------------------------|
+| `backup` | Backup `app.asar` file                      |
+| `unpack` | Unpack `app.asar` file into `app` directory |
+| `patch`  | Patch `app` directory                       |
+| `pack`   | Pack `app` directory to `app.asar` file     |
+| `remove` | Remove `app` directory                      |
 
-| Option      | Description (if not defined, will be used `auto` value) |
-|-------------|---------------------------------------------------------|
-| `--asar`    | Path to `app.asar` file                                 |
-| `--dir`     | Path to directory                                       |
-| `--feature` | Patcher feature (from [patches](patches) dir)           |
+| Option            | Description (if not defined, will be used `auto` value) |
+|-------------------|---------------------------------------------------------|
+| `-a`, `--asar`    | Path to `app.asar` file                                 |
+| `-d`, `--dir`     | Path to `app` directory                                 |
+| `-f`, `--feature` | Patcher feature (from [patches](patches) dir)           |
 
-> You can invoke `--feature` several times to apply all patches!
+> You can invoke `-f`, `--feature` several times to apply all patches!
 
 #### Examples
 
@@ -71,8 +67,17 @@ Use custom `actions` (`backup`, `unpack` and `patch`)
 $ yarn run gitcracken patcher backup unpack patch
 ```
 
- Mac from sudo
+Mac from sudo
+
 ```bash
 sh-3.2# cd /.../Projects\ From\ GIT/GitCracken/GitCracken/dist/bin
 sh-3.2# yarn run gitcracken.js patcher --asar /Applications/GitKraken.app/Contents/Resources/app.asar
+```
+
+## Disable Automatic Update
+
+Add this content to your `hosts` file:
+
+```text
+0.0.0.0 release.gitkraken.com
 ```
