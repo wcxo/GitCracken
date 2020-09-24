@@ -81,4 +81,5 @@ Add this content to your `hosts` file:
 
 ```text
 0.0.0.0 release.gitkraken.com
+0.0.0.0 release.axocdn.com
 ```
