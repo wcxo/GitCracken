@@ -17,6 +17,7 @@ export class Logo {
     console.log(`${chalk.bold("• Description")}: ${packageJson.description}`);
     console.log(`${chalk.bold("• Version")}: ${packageJson.version}`);
     console.log(`${chalk.bold("• Author")}: ${packageJson.author}`);
+    console.log(`${chalk.bold("• Maintainers")}: ${packageJson.maintainers.map((maintainer) => maintainer.name).join(", ")}`);
     console.log(`${chalk.bold("• License")}: ${packageJson.license}`);
     console.log(`${chalk.bold("• Home Page")}: ${packageJson.homepage}`);
     console.log();

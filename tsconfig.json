@@ -8,6 +8,7 @@
     "newLine": "lf",
     "outDir": "./dist",
     "removeComments": true,
+    "resolveJsonModule": true,
     "sourceMap": false,
     "strict": true,
     "target": "esnext"

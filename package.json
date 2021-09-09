@@ -2,10 +2,16 @@
   "name": "gitcracken",
   "description": "GitKraken utils for non-commercial use",
   "author": "KillWolfVlad",
+  "maintainers": [
+    {
+      "name" : "BoGnY",
+      "url" : "https://github.com/BoGnY"
+    }
+  ],
   "version": "0.8",
   "license": "MIT",
   "private": true,
-  "homepage": "https://pastebin.com/u/KillWolfVlad",
+  "homepage": "https://github.com/BoGnY/GitCracken",
   "main": "dist/index.js",
   "bin": {
     "gitcracken": "dist/bin/gitcracken.js"

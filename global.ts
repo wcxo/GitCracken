@@ -1,9 +1,8 @@
 /// <reference path="./types/index.d.ts" />
 
 import * as path from "path";
-
-import * as fs from "fs-extra";
 import * as pkgDir from "pkg-dir";
+import * as pJson from "./package.json";
 
 /**
  * Base directory with package.json
@@ -14,10 +13,11 @@ export const baseDir = pkgDir.sync(__dirname) as string;
  * package.json
  */
 export const packageJson: {
-  author: string;
-  description: string;
-  homepage: string;
-  license: string;
   name: string;
+  description: string;
+  author: string;
+  maintainers: Array<{name: string; url: string}>;
   version: string;
-} = fs.readJSONSync(path.join(baseDir, "package.json"));
+  license: string;
+  homepage: string;
+} = pJson;
