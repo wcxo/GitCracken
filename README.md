@@ -14,7 +14,9 @@ Working on `GNU/Linux` (without `snap`), `Windows` and `macOS`!
 
 - `Node.js` v12 LTS or later
 - `Yarn`
-- `GitKraken v6.0+ and v7.0+` (latest tested v7.3.2)
+- `GitKraken v7.0+ and v7.7+` (latest tested v7.7.2)
+
+NOTE: GitKraken v6.x are no more supported. Patches are still available on release page.
 
 ## Usage
 

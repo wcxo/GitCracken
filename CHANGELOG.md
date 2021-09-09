@@ -7,9 +7,11 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ## [Unreleased]
 
 ### Added
+- Support GitKraken v7.7.2
 - Added maintainers to info on logo
 
 ### Changed
+- Splitted patches for version ***>=7.x && <=7.5.x*** and ***>=7.6.x*** (thanks to @ductran95)
 - Use TypeScript's `resolveJsonModule` option to load packages.json instead using `fs-extra` Npm package
 
 ## [v0.9] - 2020-11-12

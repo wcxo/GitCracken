@@ -7,6 +7,7 @@ import * as fs from "fs-extra";
 import natsort from "natsort";
 
 import {baseDir} from "../global";
+import * as pJson from "./../package.json";
 import {CURRENT_PLATFORM, Platforms} from "./platform";
 
 /**
@@ -168,14 +169,35 @@ export class Patcher {
    * @throws Error
    */
   public patchDir(): void {
+    let patchesDir = "";
+    const packageJson = pJson;
+    const version: string = packageJson.version;
+    const versionNumbers = version.split(".").map((x) => Number(x));
+    const majorVersion = versionNumbers[0];
+    const minorVersion = versionNumbers[1];
+    const patchVersion = versionNumbers[2];
+
+    if (majorVersion === 7) { // Major version must be 7
+      if (minorVersion <= 5) { // version >=7.x & <=7.5.x then use legacy patches
+        patchesDir = "patches/7.0";
+      } else { // version >= 7.6.x then use newer patches
+        patchesDir = "patches/7.6";
+      }
+    } else {
+      throw new Error(`Can't patch ${version}... Only version 7.x are supported!`);
+    }
+
     for (const feature of this.features) {
-      this.patchDirWithFeature(feature);
+      this.patchDirWithFeature(feature, patchesDir);
     }
   }
 
-  private patchDirWithFeature(feature: string): void {
+  private patchDirWithFeature(feature: string, patchesDir: string): void {
     const patches = diff.parsePatch(
-      fs.readFileSync(path.join(baseDir, "patches", `${feature}.diff`), "utf8"),
+      fs.readFileSync(
+        path.join(baseDir, patchesDir, `${feature}.diff`),
+        "utf8",
+      ),
     );
     for (const patch of patches) {
       this.patchDirWithPatch(patch);
