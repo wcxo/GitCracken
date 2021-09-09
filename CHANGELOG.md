@@ -6,6 +6,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [v0.10] - 2021-09-09
 ### Added
 - Support GitKraken v7.7.2
 - New patch type "private_repo" (thanks to @maxzxwd)
@@ -50,7 +51,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Support GitKraken Pro v6.0.0
 - Bump dependencies
 
-[Unreleased]: https://github.com/BoGnY/GitCracken/compare/v0.9...HEAD
+[Unreleased]: https://github.com/BoGnY/GitCracken/compare/v0.10...HEAD
+[v0.10]: https://github.com/BoGnY/GitCracken/compare/v0.9...v0.10
 [v0.9]: https://github.com/BoGnY/GitCracken/compare/v0.8...v0.9
 [v0.8]: https://github.com/BoGnY/GitCracken/compare/v0.7...v0.8
 [v0.7]: https://github.com/BoGnY/GitCracken/compare/v0.6.1...v0.7
