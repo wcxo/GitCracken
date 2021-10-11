@@ -7,7 +7,6 @@ import * as fs from "fs-extra";
 import natsort from "natsort";
 
 import {baseDir} from "../global";
-import * as pJson from "./../package.json";
 import {CURRENT_PLATFORM, Platforms} from "./platform";
 
 /**
@@ -170,7 +169,7 @@ export class Patcher {
    */
   public patchDir(): void {
     let patchesDir = "";
-    const packageJson = pJson;
+    const packageJson = require(path.join(this.dir, "package.json"));
     const version: string = packageJson.version;
     const versionNumbers = version.split(".").map((x) => Number(x));
     const majorVersion = versionNumbers[0];
