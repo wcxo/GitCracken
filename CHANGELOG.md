@@ -6,6 +6,13 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [v0.11] - 2021-10-11
+### Added
+- Support GitKraken v8.0.1
+
+### Fixed
+- Fixed wrong package.json path when trying to identify GitKraken version number
+
 ## [v0.10] - 2021-09-09
 ### Added
 - Support GitKraken v7.7.2
@@ -51,7 +58,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Support GitKraken Pro v6.0.0
 - Bump dependencies
 
-[Unreleased]: https://github.com/BoGnY/GitCracken/compare/v0.10...HEAD
+[Unreleased]: https://github.com/BoGnY/GitCracken/compare/v0.11...HEAD
+[v0.11]: https://github.com/BoGnY/GitCracken/compare/v0.10...v0.11
 [v0.10]: https://github.com/BoGnY/GitCracken/compare/v0.9...v0.10
 [v0.9]: https://github.com/BoGnY/GitCracken/compare/v0.8...v0.9
 [v0.8]: https://github.com/BoGnY/GitCracken/compare/v0.7...v0.8
