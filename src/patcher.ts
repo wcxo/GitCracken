@@ -176,14 +176,16 @@ export class Patcher {
     const minorVersion = versionNumbers[1];
     const patchVersion = versionNumbers[2];
 
-    if (majorVersion === 7) { // Major version must be 7
+    if (majorVersion === 7) { // Major version must be 7 or 8
       if (minorVersion <= 5) { // version >=7.x & <=7.5.x then use legacy patches
-        patchesDir = "patches/7.0";
+        patchesDir = "../patches/7.0";
       } else { // version >= 7.6.x then use newer patches
-        patchesDir = "patches/7.6";
+        patchesDir = "../patches/7.6";
       }
+    } else if (majorVersion === 8) { // Major version must be 7 or 8
+      patchesDir = "../patches/7.6";
     } else {
-      throw new Error(`Can't patch ${version}... Only version 7.x are supported!`);
+      throw new Error(`Can't patch ${version}... Only version 7.x and 8.0.x are supported!`);
     }
 
     for (const feature of this.features) {
