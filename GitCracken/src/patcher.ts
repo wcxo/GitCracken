@@ -169,8 +169,32 @@ export class Patcher {
    */
   public patchDir(): void {
     for (const feature of this.features) {
-      this.patchDirWithFeature(feature);
+      switch (feature) {
+        case "pro":
+          this.patchDirWithPro();
+          break;
+
+        default:
+          this.patchDirWithFeature(feature);
+          break;
+      }
     }
+  }
+
+  private patchDirWithPro(): void {
+    const bundlePath = path.join(this.dir, "src/main/static/main.bundle.js");
+    const searchValue =
+      'return JSON.parse((0,K.default)(Buffer.from(q,"base64").toString("utf8"),Buffer.from(B.secure,"base64")).toString("utf8"))}';
+    const replaceValue =
+      'var json=JSON.parse((0,K.default)(Buffer.from(q,"base64").toString("utf8"),Buffer.from(B.secure,"base64")).toString("utf8"));' +
+      '("licenseExpiresAt"in json||"licensedFeatures"in json)&&(delete json.proAccessState,delete json.licenseExpiresAt,json={...json,licensedFeatures:["pro"]});' +
+      "return json}";
+    const sourceData = fs.readFileSync(bundlePath, "utf-8");
+    const sourcePatchedData = sourceData.replace(searchValue, replaceValue);
+    if (sourceData === sourcePatchedData) {
+      throw new Error("Can't patch pro features, pattern match failed.");
+    }
+    fs.writeFileSync(bundlePath, sourcePatchedData, "utf-8");
   }
 
   private patchDirWithFeature(feature: string): void {

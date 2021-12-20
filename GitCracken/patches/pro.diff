@@ -1,3 +1,6 @@
+This file would be ignored since GitCracken v8.2.0.
+There is a new patcher with pattern match now.
+See patchDirWithPro in src/patcher.ts for more detail.
 --- src/main/static/startMainProcess.js
 +++ src/main/static/startMainProcess.js
 @@ -1,4 +1,19 @@
