@@ -183,16 +183,23 @@ export class Patcher {
 
   private patchDirWithPro(): void {
     const bundlePath = path.join(this.dir, "src/main/static/main.bundle.js");
-    const searchValue =
-      'return JSON.parse((0,K.default)(Buffer.from(q,"base64").toString("utf8"),Buffer.from(B.secure,"base64")).toString("utf8"))}';
+
+    const patchedPattern = '(delete json.proAccessState,delete json.licenseExpiresAt,json={...json,licensedFeatures:["pro"]});';
+
+    const pattern1 = /const [^=]*="dev"===[^?]*\?"[\w+/=]+":"[\w+/=]+";/;
+    const pattern2 = /return (JSON\.parse\(\([^;]*?\)\(Buffer\.from\([^;]*?,"base64"\)\.toString\("utf8"\),Buffer\.from\([^;]*?\.secure,"base64"\)\)\.toString\("utf8"\)\))\};/;
+    const searchValue = new RegExp(`(?<=${pattern1.source})${pattern2.source}`)
     const replaceValue =
-      'var json=JSON.parse((0,K.default)(Buffer.from(q,"base64").toString("utf8"),Buffer.from(B.secure,"base64")).toString("utf8"));' +
-      '("licenseExpiresAt"in json||"licensedFeatures"in json)&&(delete json.proAccessState,delete json.licenseExpiresAt,json={...json,licensedFeatures:["pro"]});' +
-      "return json}";
+      "var json=$1;" +
+      '("licenseExpiresAt"in json||"licensedFeatures"in json)&&' +
+      '(delete json.proAccessState,delete json.licenseExpiresAt,json={...json,licensedFeatures:["pro"]});' +
+      "return json};";
+
     const sourceData = fs.readFileSync(bundlePath, "utf-8");
     const sourcePatchedData = sourceData.replace(searchValue, replaceValue);
     if (sourceData === sourcePatchedData) {
-      throw new Error("Can't patch pro features, pattern match failed.");
+      if (sourceData.indexOf(patchedPattern) < 0) throw new Error("Can't patch pro features, pattern match failed. Get support from https://t.me/gitkrakencrackchat");
+      throw new Error("It's already patched.");
     }
     fs.writeFileSync(bundlePath, sourcePatchedData, "utf-8");
   }
